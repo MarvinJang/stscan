@@ -80,17 +80,15 @@ npm run dev
 
 ## 定时任务
 
-`vercel.json` 配置了每小时触发一次 `/api/scan`：
+`vercel.json` 配置了每天触发一次 `/api/scan`（UTC 16:00 / 北京时间次日 00:00）：
 
 ```json
-{ "crons": [{ "path": "/api/scan?token=__SCAN_TOKEN__", "schedule": "0 * * * *" }] }
+{ "crons": [{ "path": "/api/scan", "schedule": "0 16 * * *" }] }
 ```
 
-> ⚠️ Vercel 的 cron path 无法读取环境变量，部署前需把 `__SCAN_TOKEN__`
-> 替换为真实 token（或改用 Vercel 项目的 Cron Secrets 配置）。
-> 若不校验，则把 `SCAN_TOKEN` 留空、并把 path 改为 `/api/scan`。
-
-本地定时可用 `node-cron` 或系统 cron 定时执行 `npm run scan`。
+> ⚠️ **Vercel 免费版（Hobby）限制 cron 每天最多 1 次**，所以这里用每日一次。
+> 如需更高频率，可升级 Pro，或本地用 `node-cron` / 系统 cron 定时执行 `npm run scan`。
+> 实时模式下看板走 `/api/data` 每次实时抓取，不依赖 cron，所以 cron 只用于落库历史 / 推送。
 
 ## 数据模型
 
